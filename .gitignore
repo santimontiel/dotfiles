@@ -1,0 +1,4 @@
+# Installer logs (machine-specific, may contain paths and apt output)
+logs/
+# Built VSCode extension packages
+*.vsix
