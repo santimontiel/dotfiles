@@ -1,0 +1,7 @@
+{
+    "editor.fontFamily": "'JetBrainsMono NF', monospace",
+    "editor.fontSize": 13,
+    "terminal.integrated.fontFamily": "'JetBrainsMono NF'",
+    "terminal.integrated.fontSize": 13,
+    "workbench.colorTheme": "Thiago Monokai Pro for VSCode"
+}

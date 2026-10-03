@@ -1,0 +1,14 @@
+{
+  "name": "thiago-monokai-pro",
+  "displayName": "Thiago Monokai Pro for VSCode",
+  "description": "Monokai Pro palette matching ~/.config/alacritty/alacritty.toml",
+  "version": "1.0.0",
+  "publisher": "thiago",
+  "engines": { "vscode": "^1.70.0" },
+  "categories": ["Themes"],
+  "contributes": {
+    "themes": [
+      { "label": "Thiago Monokai Pro for VSCode", "uiTheme": "vs-dark", "path": "./themes/thiago-monokai-pro.json" }
+    ]
+  }
+}
