@@ -1,0 +1,30 @@
+# Thiago Monokai Pro for Alacritty
+# Monokai Pro palette with a darker background; matches "Thiago Monokai Pro for VSCode"
+
+[colors.primary]
+background = "#222122"
+foreground = "#FDF9F3"
+
+[colors.cursor]
+text = "#222122"
+cursor = "#FDF9F3"
+
+[colors.normal]
+black = "#222122"
+red = "#FF6188"
+green = "#A9DC76"
+yellow = "#FFD866"
+blue = "#FC9867"
+magenta = "#AB9DF2"
+cyan = "#78DCE8"
+white = "#FDF9F3"
+
+[colors.bright]
+black = "#908E8F"
+red = "#FF6188"
+green = "#A9DC76"
+yellow = "#FFD866"
+blue = "#FC9867"
+magenta = "#AB9DF2"
+cyan = "#78DCE8"
+white = "#FDF9F3"
