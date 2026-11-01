@@ -88,7 +88,7 @@ avail_gb=$(df --output=avail -BG /opt 2>/dev/null | tail -1 | tr -dc '0-9')
 [[ "${avail_gb:-0}" -ge 5 ]] || die "Need >= 5 GB free on /opt (have ${avail_gb:-?} GB)."
 ok "Disk space on /opt: ${avail_gb} GB free"
 info "Requesting sudo (password may be asked once)"
-sudo -v || die "sudo is required."
+sudo -n true 2>/dev/null || sudo -v || die "sudo is required."
 # keep sudo alive for the whole run
 ( while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done ) >/dev/null 2>&1 &
 SUDO_KEEPALIVE=$!
@@ -96,9 +96,9 @@ trap 'kill $SUDO_KEEPALIVE 2>/dev/null || true' EXIT
 
 # ---------- 2. prerequisites ----------
 step "Prerequisites"
-run "apt update" sudo apt-get update
+run "apt update" sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 update
 run "Installing curl, gnupg, software-properties-common" \
-  sudo apt-get install -y curl gnupg software-properties-common
+  sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 install -y curl gnupg software-properties-common
 run "Enabling 'universe' repository" sudo add-apt-repository -y universe
 
 # ---------- 3. GPG key ----------
@@ -135,7 +135,7 @@ fi
 if dpkg -s ros2-apt-source >/dev/null 2>&1; then
   warn "Package 'ros2-apt-source' is installed and may duplicate this source; consider removing it."
 fi
-run "apt update (with ROS repo)" sudo apt-get update
+run "apt update (with ROS repo)" sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 update
 candidate="$(LC_ALL=C apt-cache policy "$PKG" | awk '/Candidate:/{print $2}')"
 [[ -n "$candidate" && "$candidate" != "(none)" ]] \
   || die "$PKG has no install candidate. Is the ROS repo reachable for $VERSION_CODENAME?"
@@ -144,7 +144,7 @@ ok "$PKG candidate: $candidate"
 # ---------- 5. install ----------
 step "Installing $PKG and ros-dev-tools (this is the long step)"
 info "Download is large (~1–2 GB); progress is in the log: tail -f $LOG_FILE"
-run "apt install $PKG ros-dev-tools" sudo apt-get install -y "$PKG" ros-dev-tools
+run "apt install $PKG ros-dev-tools" sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 install -y "$PKG" ros-dev-tools
 
 # ---------- 6. shell setup ----------
 step "Shell setup"
