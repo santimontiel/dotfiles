@@ -50,13 +50,11 @@ if command -v code >/dev/null; then
 elif [[ $PACKAGES -eq 1 ]]; then
   command -v apt-get >/dev/null || die "VSCode is missing and this system has no apt. Install VSCode manually, then re-run."
   info "Adding Microsoft's apt repo and installing 'code' (sudo may ask for a password)"
-  sudo apt-get update -qq
-  sudo apt-get install -y curl gpg
+  apt_install curl gpg
   curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /usr/share/keyrings/microsoft.gpg >/dev/null
   printf 'Types: deb\nURIs: https://packages.microsoft.com/repos/code\nSuites: stable\nComponents: main\nArchitectures: %s\nSigned-By: /usr/share/keyrings/microsoft.gpg\n' \
     "$(dpkg --print-architecture)" | sudo tee /etc/apt/sources.list.d/vscode.sources >/dev/null
-  sudo apt-get update -qq
-  sudo apt-get install -y code
+  apt_refresh; apt_install code
   ok "Installed: VSCode $(code --version 2>/dev/null | head -1)"
 else
   die "VSCode ('code') is not installed and --skip-packages was given"

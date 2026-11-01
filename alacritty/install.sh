@@ -43,9 +43,7 @@ step "Alacritty package"
 if command -v alacritty >/dev/null; then
   ok "Already installed: $(alacritty --version)"
 elif [[ $PACKAGES -eq 1 ]]; then
-  info "Installing with apt (sudo may ask for a password)"
-  sudo apt-get update -qq
-  sudo apt-get install -y alacritty
+  apt_install alacritty
   ok "Installed: $(alacritty --version)"
 else
   warn "alacritty is not installed and --skip-packages was given; config will still be placed"
