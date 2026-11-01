@@ -1,6 +1,6 @@
 # dotfiles
 
-Santi's machine setup: terminal, editor and ROS 2. Each folder installs one tool with a single idempotent script.
+Santi's machine setup: apps, Docker, terminal, editor, ROS 2 and Git. Each folder installs one tool with a single idempotent script.
 
 **Audience: a coding agent acting on Santi's instructions.** Read this file first, then the README of the folder you're working in.
 
@@ -9,6 +9,13 @@ Santi's machine setup: terminal, editor and ROS 2. Each folder installs one tool
 | [`alacritty/`](alacritty/README.md) | Alacritty terminal, config, "Thiago Monokai Pro for Alacritty" theme | `alacritty/install.sh` | Only to apt install Alacritty, or with `--default-terminal` |
 | [`vscode/`](vscode/README.md) | VSCode font settings, "Thiago Monokai Pro for VSCode" theme | `vscode/install.sh` | Only if VSCode itself is missing |
 | [`ros2-lyrical/`](ros2-lyrical/README.md) | ROS 2 Lyrical Luth from the ROS apt repo | `ros2-lyrical/install.sh` | Yes |
+| [`apps/`](apps/README.md) | Dev tools, unzip, 7zip, herdr, Claude Code, Codex, pi, VSCode, Brave, Spotify, Discord, Claude Desktop | `apps/install.sh [app ...]` | Only for apps that are missing |
+| [`docker/`](docker/README.md) | Docker Engine, Compose, Buildx, docker group | `docker/install.sh` | Yes |
+| [`git/`](git/README.md) | Git identity, SSH key, `gh` login. **Interactive** | `git/setup.sh` | No |
+| `get.sh` | Entry point for a blank machine: installs git, clones the repo, runs `bootstrap.sh` | `bash <(curl -fsSL .../get.sh)` | Yes |
+| `bootstrap.sh` | Runs everything above in the right order, then `check.sh` | `bootstrap.sh` | Yes |
+| `check.sh` | Read-only verification that the machine matches the repo | `check.sh` | No |
+| `test/` | `container.sh`: runs shellcheck and the whole setup in a clean `ubuntu:26.04` container | `bash test/container.sh [--ros] [--lint-only]` | No (needs Docker) |
 | `fonts/` | JetBrains Mono Nerd Font v3.5.1 (used by Alacritty and VSCode) | `fonts/install-jetbrains-mono-nf.sh` | No |
 | `lib/` | Shared shell helpers for the installers. Not run directly | | |
 
@@ -16,15 +23,23 @@ Target system: Ubuntu 26.04 LTS ("resolute"), x86_64, GNOME, bash. The Alacritty
 
 ## Full setup on a new machine
 
-Run from the repo root, in this order:
+On a brand-new machine (no git, no SSH key), from a terminal:
 
 ```bash
-bash alacritty/install.sh          # also installs the font
-bash vscode/install.sh
-bash ros2-lyrical/install.sh       # long: downloads 1-2 GB
+bash <(curl -fsSL https://raw.githubusercontent.com/santimontiel/dotfiles/master/get.sh)
 ```
 
-The order only matters for speed: the font is installed by whichever of the first two runs first, and the other skips it.
+`get.sh` installs `git` and `curl`, clones this public repo over HTTPS into `~/Workspace/Tools/dotfiles` (`DOTFILES_DIR` to change it) and runs `bootstrap.sh`. Arguments are passed on: append `--no-ros`, `--no-docker` or `--no-git`. Use the `bash <(...)` form, not `curl ... | bash`: the pipe takes over stdin, so the sudo and Git prompts couldn't ask anything. When `git/setup.sh` finishes, it switches the clone's `origin` from HTTPS to SSH so `git push` uses your new key.
+
+With git already available: `bash bootstrap.sh` from the repo root.
+
+`bootstrap.sh` installs prerequisites, then runs `apps`, `docker`, `alacritty`, `vscode`, `ros2-lyrical` and `git/setup.sh` (the only interactive one, last), and finishes with `check.sh`. A failed step is reported and the rest continue. Order matters: `apps` comes before `vscode` because the VSCode installer needs `zip`.
+
+To check a machine at any time: `bash check.sh` (add `--offline` to skip the GitHub SSH test). It changes nothing, prints `✔`/`!`/`✘` with the fix command for each failure, and exits non-zero if anything failed.
+
+## Testing changes
+
+`bash test/container.sh` runs shellcheck, then `bootstrap.sh`, `git/setup.sh`, a second `apps` run (must be a no-op) and `check.sh` in a throwaway `ubuntu:26.04` container, using the working tree. Add `--ros` to include ROS 2 (1-2 GB), `--lint-only` for just shellcheck. It does not cover Docker Engine (no systemd in the container), GNOME or the GPU, nor `get.sh` itself (it clones from GitHub, so push first). Run it before relying on a change on a real machine.
 
 ## Rules for agents
 
@@ -34,8 +49,9 @@ The order only matters for speed: the font is installed by whichever of the firs
 4. **Read the output markers.** `✔` done or already in place, `•` info, `!` warning (the run continues), `✘` fatal (exit code is non-zero). Report every `!` and `✘` line to Santi verbatim.
 5. **Never delete backups** (`*.bak-<timestamp>`) unless Santi asks. They're the rollback path.
 6. **Edit configs in the repo, not in `~/.config`.** Alacritty's files are symlinked into the repo by default, so editing either path changes the repo copy. VSCode's settings are merged, not linked: change `vscode/settings.json` and re-run the installer.
-7. **Verify, then say what you verified.** Each README has a "Verify" section. If you couldn't run a check (no display, no sudo), say so instead of reporting success.
-8. **Commits** use Gitmoji + Conventional Commits, for example `✨ feat: Add tmux config`.
+7. **Verify, then say what you verified.** Run `bash check.sh` first; each README also has a "Verify" section. If you couldn't run a check (no display, no sudo), say so instead of reporting success.
+8. **Run `bash test/container.sh`** after changing an installer.
+9. **Commits** use Gitmoji + Conventional Commits, for example `✨ feat: Add tmux config`.
 
 ## Adding a new tool
 
