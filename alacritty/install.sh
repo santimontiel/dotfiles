@@ -17,7 +17,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$HERE/../lib/common.sh"
 trap 'die "Failed at line $LINENO: ${BASH_COMMAND}"' ERR
 
-MODE=link; PACKAGES=1; DEFAULT_TERM=0; COLOR_PROMPT=0
+MODE="link"; PACKAGES=1; DEFAULT_TERM=0; COLOR_PROMPT=0
 for arg in "$@"; do
   case "$arg" in
     --copy) MODE=copy ;;

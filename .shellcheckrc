@@ -1,0 +1,3 @@
+# TOTAL is read by step() in lib/common.sh; "~" appears in message text only.
+disable=SC2034,SC2088,SC1091
+shell=bash
