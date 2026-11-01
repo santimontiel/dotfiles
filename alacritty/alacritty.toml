@@ -27,3 +27,8 @@ style = "Bold Italic"
 
 [cursor]
 style = { shape = "Block", blinking = "Off" }
+
+[[keyboard.bindings]]
+key = "Delete"
+mods = "Control"
+chars = "\u001bd"

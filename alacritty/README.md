@@ -6,7 +6,7 @@ Alacritty terminal with JetBrains Mono Nerd Font and the **Thiago Monokai Pro fo
 
 | Repo file | Installed at | Purpose |
 |---|---|---|
-| `alacritty.toml` | `~/.config/alacritty/alacritty.toml` | Window, font and cursor settings. Loads the theme file |
+| `alacritty.toml` | `~/.config/alacritty/alacritty.toml` | Window, font, cursor and key binding settings. Loads the theme file |
 | `themes/thiago-monokai-pro.toml` | `~/.config/alacritty/themes/thiago-monokai-pro.toml` | All colors |
 | `install.sh` | | Installer |
 
@@ -59,6 +59,7 @@ fc-list : family | grep -F "JetBrainsMono Nerd Font Mono"
 | Window size | 102 columns x 23 lines | |
 | Padding | 8 px each side | |
 | Cursor | Block, no blinking | |
+| Ctrl+Delete | Sends `ESC d` (Alt+d) | Readline's `kill-word`, so it deletes the next word in bash/zsh. Matches GNOME Terminal's behavior. Needs no `.inputrc` change |
 
 Alacritty reloads its config live: open windows pick up saved changes, including changes to imported files.
 
