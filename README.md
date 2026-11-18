@@ -12,6 +12,7 @@ Santi's machine setup: apps, Docker, terminal, editor, ROS 2 and Git. Each folde
 | [`apps/`](apps/README.md) | Dev tools, unzip, 7zip, herdr, Claude Code, Codex, pi, VSCode, Brave, Spotify, Discord, Claude Desktop | `apps/install.sh [app ...]` | Only for apps that are missing |
 | [`docker/`](docker/README.md) | Docker Engine, Compose, Buildx, docker group | `docker/install.sh` | Yes |
 | [`git/`](git/README.md) | Git identity, SSH key, `gh` login. **Interactive** | `git/setup.sh` | No |
+| [`rclone/`](rclone/README.md) | rclone binary, plus a guide for the Google Drive login over SSH | `rclone/install.sh` | No |
 | `get.sh` | Entry point for a blank machine: installs git, clones the repo, runs `bootstrap.sh` | `bash <(curl -fsSL .../get.sh)` | Yes |
 | `bootstrap.sh` | Runs everything above in the right order, then `check.sh` | `bootstrap.sh` | Yes |
 | `check.sh` | Read-only verification that the machine matches the repo | `check.sh` | No |
